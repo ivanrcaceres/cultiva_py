@@ -1,0 +1,28 @@
+{% extends 'base.html'%}
+{% load i18n %}
+
+{% block content %}
+<div class="columns is-centered">
+        <div class="column is-3">
+            <h1>Acceder al sistema</h1>
+            <form method="post">{% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Acceder</button>
+            </form>
+
+            <a href="/user-pass">
+                <span class="tag is-white">¿Has olvidado la contraseña?</span>
+            </a>
+
+            <br>
+
+            <a href="/registar_user">
+                <article class="tile is-child notification has-text-centered" style="background-color: #29cfbb; color: white;">
+                    <p class="title is-4">{% trans "Crear Cuenta" %}</p>
+                </article>
+            </a>
+
+
+        </div>
+</div>
+{% endblock %}

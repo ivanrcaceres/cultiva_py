@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load leaflet_tags %}
+{% load humanize %}
+{% load static %}
+{% load pipeline %}
+{% load i18n %}
+
+{% block bread %}
+  <nav class="breadcrumb  has-arrow-separator" aria-label="breadcrumbs">
+    <ul>
+        <li>
+          <a href="/">
+            <span class="icon is-small">
+              <i class="fas fa-home" aria-hidden="true"></i>
+            </span>
+            <span>{% trans "Inicio" %}</span>
+          </a>
+        </li>
+        <li><a href="/recibir">{% trans "Productor" %}</a></li>
+        <li class="is-active"><a href="#" aria-current="page">{% trans "Publicaciones" %}</a></li>
+      </ul>
+  </nav>
+{% endblock bread %}
+
+
+
+{% block content %}
+
+<!--<div class="columns is-centered is-full">-->
+<!--    <div class="is-full">-->
+
+<!--    <h1 class="title is-1">Publicaciones</h1>-->
+
+<!--    {% if my_HelpRequest_list %}-->
+<!--        <ul>-->
+
+<!--        {% for book in my_HelpRequest_list %}-->
+
+
+<!--        <div class="media">-->
+<!--            <a href="/pedidos/{{book.id}}" class="has-text-grey-dark" title="{{book}}">-->
+<!--              <div class="media-content">-->
+<!--                <div class="content">-->
+
+<!--                    <p>-->
+<!--                        <i class="fas fa-people-carry" aria-hidden="true"></i>-->
+<!--                        <strong style="color:#363636;">#{{id}} | {{name}}</strong>-->
+<!--                        <small>{{book}}</small>-->
+<!--                        <br>-->
+<!--                        {{title}}-->
+<!--                    </p>-->
+
+<!--                </div>-->
+<!--              </div>-->
+<!--            </a>-->
+
+<!--            <div >-->
+<!--            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+<!--            <a  href="publ-edit-pro/{{book.id}}" aria-current="page">{% trans "editar" %}</a>-->
+<!--            &nbsp;&nbsp;&nbsp;&nbsp;-->
+<!--            <a href="/delete-publicacion/{{book.id}}" aria-current="page">{% trans "eliminar" %}</a>-->
+<!--                </div>-->
+
+<!--        </div>-->
+
+
+
+
+<!--        {% endfor %}-->
+
+<!--            {% for book in my_HelpRequest_list %}-->
+
+
+<!--            {% endfor %}-->
+
+<!--    </ul>-->
+<!--    {% else %}-->
+<!--      <p>There are no books in the library.</p>-->
+<!--    {% endif %}-->
+
+<!--</div>-->
+<!--</div>-->
+
+<br>
+<div class="columns is-centered is-full">
+    <div class="is-full">
+
+    <h1 class="title is-1">Publicaciones</h1>
+
+    {% if my_HelpRequest_list %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th> Publicaciones </th>
+                    <th> Acciones </th>
+                </tr>
+            </thead>
+            <tbody>
+
+            {% for book in my_HelpRequest_list %}
+            <tr>
+            <td>
+                       <a href="/pedidos/{{book.id}}" class="has-text-grey-dark" title="{{book}}">
+                            <div class="media-content">
+                                <div class="content">
+
+                                    <p>
+                                        <i class="fas fa-people-carry" aria-hidden="true"></i>
+                                        <strong style="color:#363636;">#{{id}} | {{name}}</strong>
+                                        <small>{{book}}</small>
+                                        <br>
+                                        {{title}}
+                                    </p>
+                                </div>
+                            </div>
+                       </a>
+                    </td>
+                    <td>
+                        <a  href="publ-edit-pro/{{book.id}}" aria-current="page">{% trans "editar" %}</a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="/delete-publicacion/{{book.id}}" aria-current="page">{% trans "eliminar" %}</a>
+                     </td>
+                </tr>
+        {% endfor %}
+
+            </tbody>
+
+        </table>
+
+
+    {% else %}
+      <p>There are no books in the library.</p>
+    {% endif %}
+
+</div>
+</div>
+
+
+
+
+
+{% endblock content %}

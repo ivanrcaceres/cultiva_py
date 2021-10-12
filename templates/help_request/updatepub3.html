@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load leaflet_tags %}
+{% load static %}
+{% block bread %}
+<nav class="breadcrumb  has-arrow-separator" aria-label="breadcrumbs">
+    <ul>
+        <li>
+          <a href="/">
+            <span class="icon is-small">
+              <i class="fas fa-home" aria-hidden="true"></i>
+            </span>
+            <span>{% trans "Home" %}</span>
+          </a>
+        </li>
+        <li><a href="/recibir">{% trans "Productor" %}</a></li>
+        <li><a href="/pedidos_mios">{% trans "Publicaciones" %}</a></li>
+        <li class="is-active"><a href="#" aria-current="page">{% trans "Editar Publicacion de Producto" %}</a></li>
+    </ul>
+</nav>
+{% endblock bread %} 
+{% block content%}
+<div class="columns is-centered"> 
+    <div class="column is-half">
+      <button href="#" id="find-me" class="button is-success  is-outlined is-fullwidth" style="margin-bottom: 10px;">
+        <span class="icon is-small">
+          <i class="fas fa-location-arrow"></i>
+        </span>
+        <span>{% trans "Haz clic aquí e intentaré encontrarte" %}</span>
+      </button>
+      <p id="status"></p>
+      <form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        {% include 'help_request/postpost.html' with form=form %}
+          {% if foto_url  %}
+<!--<a> Archivo que esta en el perfil</a>-->
+<!--<br>-->
+<a href="/media/{{foto_url}}" class="btn btn-primary btn-sm" target="_blank">Ver Foto Actual</a>
+{% endif %}
+        {% include 'help_request/post_editar_publicacion_002.html' with form=form %}
+        <div class="control">
+          <button id="submit" class="button is-success is-fullwidth">{% trans "Guardar lo editado" %}</button>
+        </div>
+      </form>
+
+
+<div class="modal" id="myModal">
+  <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">{% trans "Map instructions" %}</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <li class="is-size-7">
+            {% blocktrans trimmed with icon="<i class=\"fas fa-map-marker-alt\"></i>" %}
+	    Move the map to your location and then click on the {{ icon }} icon to mark your location on the map.
+	    {% endblocktrans %}
+	    </li>
+            <li class="is-size-7">
+            {% blocktrans trimmed with icon="<i class=\"fas fa-edit\"></i>" %}
+	    If you make a mistake, you can click on the {{ icon }} icon to move the marker. Once corrected click on Save.
+	    {% endblocktrans %}
+	    </li>
+            <p class="image"><img src="{% static "img/ayudamapa.gif" %}" alt=""></p>
+        </section>
+        <footer class="modal-card-foot">
+             <button class="button is-success close">{% trans "Ok" %}</button>
+        </footer>
+    </div>
+</div>
+
+<script>
+
+  function getDireccion(longitude, latitude) {
+    return new Promise(function(resolve, reject){
+      fetch(`https://geo.cabu.dev/v1/geoinversa/${latitude}/${longitude}`)
+        .then((response) => response.json())
+        .then((data) => {
+          const direccion = data.data;
+
+          document.getElementById('div_direccion').innerHTML = `
+          <span><b>{% trans "Address" %}</b>:${direccion.direccion || ''}</span><br /> 
+          <span><b>{% trans "Area" %}</b>:${direccion.localidad || '' }</span><br /> 
+          <span><b>{% trans "City" %}</b>:${direccion.distrito || ''} <span>
+	  <span><b>{% trans "State" %}</b>:${direccion.departamento || ''}</span>`;
+          document.getElementById('id_address').value = `${direccion.direccion || ''} ${direccion.localidad || '' } ${direccion.distrito || ''} ${direccion.departamento || ''}`;
+          resolve(true)
+        })
+        .catch((error) => {
+          resolve(true)
+        })
+    })
+  }
+
+  function geoFindMe() {
+
+    const status = document.querySelector('#status');
+    const boton = document.querySelector('#find-me');
+
+    function makePoint(longitude, latitude) {
+      return JSON.stringify({
+        type: 'Point',
+        coordinates: [longitude, latitude]
+      });
+    }
+
+    async function addMarker(longitude, latitude) {
+      document.getElementById('id_location').innerHTML = makePoint(longitude, latitude);
+      
+      await getDireccion(longitude, latitude);
+
+      const you = L.marker([latitude, longitude], {draggable: true, opacity: 0.9, title:'{% trans "Your location" %}'}).addTo(maps[0]);
+      you.bindPopup('<b>{% trans "Move this marker to your location" %}</b>').openPopup();
+      
+      maps[0].setView([latitude, longitude], 10);
+
+      you.on('dragend', async function (e) {
+        await getDireccion(e.target._latlng.lng, e.target._latlng.lat);
+        document.getElementById('id_location').innerHTML = makePoint(e.target._latlng.lng, e.target._latlng.lat);
+      });
+    }
+
+    function success(position) {
+      const latitude  = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      boton.textContent = '{% trans "Found you!" %}';
+      boton.disabled = true;
+      status.textContent = '';
+
+      addMarker(longitude, latitude);
+    }
+
+    function error() {
+      
+      // Punto 0 = Panteon de los heroes
+      const latitude  = -25.282077;
+      const longitude = -57.635131;
+
+      boton.textContent = '{% trans "Did not find you!" %}';
+      boton.disabled = true;
+      status.textContent = '{% trans "Can not find you, move the marker further below." %}';
+
+      addMarker(longitude, latitude);
+      
+    }
+
+    if (!navigator.geolocation) {
+      status.textContent = '{% trans "Your browser does not support geolocation" %}';
+    } else {
+      status.textContent = '{% trans "Searching your location…" %}';
+      navigator.geolocation.getCurrentPosition(success, error);
+    }
+
+  }
+
+  function checkRequestForm() {
+    fields = [
+      "id_title",
+      "id_message",
+      "id_name",
+      "id_phone",
+      "id_location",
+      "id_address",
+    ];
+    var valid = true;
+    for (field in fields) {
+      if (!document.getElementById(fields[field]).checkValidity()) {
+        valid = false;
+      }
+    }
+
+    if (valid) {
+      document.querySelector("#submit").textContent = "Enviando...";
+      document.querySelector("#submit").disabled = "disabled";
+      return true;
+    }
+  }
+
+  document.querySelectorAll(".modal-button").forEach(function (el) {
+    el.addEventListener("click", function () {
+      var target = document.querySelector(el.getAttribute("data-target"));
+      //map.invalidateSize();
+      target.classList.add("is-active");
+
+      target.querySelector(".close").addEventListener("click", function () {
+        target.classList.remove("is-active");
+      });
+      target
+        .querySelector(".delete")
+        .addEventListener("click", function () {
+          target.classList.remove("is-active");
+        });
+      target
+        .querySelector(".modal-background")
+        .addEventListener("click", function () {
+          target.classList.remove("is-active");
+        });
+    });
+  });
+
+  document.querySelector('#find-me').addEventListener('click', geoFindMe);
+</script>
+{% endblock %}

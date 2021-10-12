@@ -1,0 +1,14 @@
+{% extends 'base.html'%}
+{% load i18n %}
+
+{% block content %}
+<div class="columns is-centered">
+        <div class="column is-5">
+    <h1>Registar nuevo usuario</h1>
+    <form method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Registrar</button>
+    </form>
+                    </div>
+</div>
+{% endblock %}

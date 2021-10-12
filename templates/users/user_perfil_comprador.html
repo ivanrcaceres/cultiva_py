@@ -1,0 +1,45 @@
+{% extends 'base2.html'%}
+{% load i18n %}
+{% block bread %}
+<nav class="breadcrumb  has-arrow-separator" aria-label="breadcrumbs">
+    <ul>
+        <li>
+          <a href="/">
+            <span class="icon is-small">
+              <i class="fas fa-home" aria-hidden="true"></i>
+            </span>
+            <span>{% trans "Home" %}</span>
+          </a>
+        </li>
+        <li><a href="/recibir">{% trans "Information" %}</a></li>
+        <li class="is-active"><a href="#" aria-current="page">{% trans "Mi perfil" %}</a></li>
+    </ul>
+</nav>
+{% endblock bread %}
+{% block content %}
+<div class="columns is-centered">
+        <div class="column is-3">
+            <h1 class="title is-1">Mi Perfil</h1>
+            <p3>Usuario: {{object.username}}</p3>
+            <br>
+            <p3>Nombre: {{object.nombre}}</p3>
+            <br>
+            <p3>Apellido: {{object.apellido}}</p3>
+            <br>
+
+            <br><br><br>
+
+<div class="tile is-child">
+                <a href="/user-edit-com/{{user.id}}">
+                    <button class="button is-info is-large is-fullwidth is-size-5 has-text-weight-bold">
+                    <span>{% trans "Editar Perfil" %}</span>
+                    <span class="icon is-medium"><i class="fas fa-thumbs-up is-le"></i></span>
+                    </button>
+                </a>
+                    </div>
+
+
+                    </div>
+
+</div>
+{% endblock %}

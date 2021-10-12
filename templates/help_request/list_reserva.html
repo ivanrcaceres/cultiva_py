@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load leaflet_tags %}
+{% load humanize %}
+{% load static %}
+{% load pipeline %}
+{% load i18n %}
+
+{% block bread %}
+  <nav class="breadcrumb  has-arrow-separator" aria-label="breadcrumbs">
+    <ul>
+        <li>
+          <a href="/">
+            <span class="icon is-small">
+              <i class="fas fa-home" aria-hidden="true"></i>
+            </span>
+            <span>{% trans "Inicio" %}</span>
+          </a>
+        </li>
+        <li><a href="/dar">{% trans "Comprador" %}</a></li>
+        <li class="is-active"><a href="#" aria-current="page">{% trans "Reservas" %}</a></li>
+      </ul>
+  </nav>
+{% endblock bread %}
+
+
+
+{% block content %}
+
+<div class="columns is-centered is-full">
+    <div class="is-full">
+        <h1 class="title is-1">RESERVAS</h1>
+        {% if my_reserva_list %}
+        <table class="table">
+                      <thead>
+                        <tr>
+                          <th> Publicaciones </th>
+                          <th> Acciones </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+            {% for book in my_reserva_list %}
+                      <tr>
+                          <td>
+
+                     <a href="/ver-reserva/{{book.id}}" class="has-text-grey-dark" title="{{book}}">
+                     <div class="media-content">
+                        <div class="content">
+                            <p>
+                                <i class="fas fa-people-carry" aria-hidden="true"></i>
+                                <strong style="color:#363636;">#{{id}} | {{name}}</strong>
+                                <small>{{book}}</small>
+                                <br>
+                                {{title}}
+                            </p>
+                        </div>
+                    </div>
+                    </a>
+                              </td>
+                          <td>
+
+                        <a  href="../update-reserva/{{book.id}}" aria-current="page">{% trans "editar" %}</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="../delete-reserva/{{book.id}}" aria-current="page">{% trans "eliminar" %}</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="../pedidos_comprador/{{book.publicacion.id}}" aria-current="page">{% trans "ir a publicacion" %}</a>
+
+                </td></tr>
+            {% endfor %}
+            </tbody>
+                    </table>
+        {% else %}
+            <p>There are no books in the library.</p>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock content %}

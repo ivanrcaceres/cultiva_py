@@ -1,0 +1,15 @@
+{% extends 'base.html'%}
+{% load i18n %}
+
+{% block content %}
+<div class="columns is-centered">
+        <div class="column is-3">
+    <h1>Verificacion de email</h1>
+    <h3>Ingre el codigo de Verificacion:</h3>
+    <form method="post">{% csrf_token %}
+        {{form.as_p}}
+        <button type="submit">Confirmar</button>
+    </form>
+                    </div>
+</div>
+{% endblock %}

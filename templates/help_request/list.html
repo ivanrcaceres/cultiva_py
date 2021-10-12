@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load leaflet_tags %}
+{% load humanize %}
+{% load static %}
+{% load pipeline %}
+{% load i18n %}
+
+{% block bread %}
+  <nav class="breadcrumb  has-arrow-separator" aria-label="breadcrumbs">
+    <ul>
+        <li>
+          <a href="/">
+            <span class="icon is-small">
+              <i class="fas fa-home" aria-hidden="true"></i>
+            </span>
+            <span>{% trans "Inicio" %}</span>
+          </a>
+        </li>
+        <li><a href="/dar">{% trans "Comprador" %}</a></li>
+        <li class="is-active"><a href="#" aria-current="page">{% trans "Publicaciones" %}</a></li>
+      </ul>
+  </nav>
+{% endblock bread %}
+
+{% block content%}
+<div class="title center">
+  {% trans "Publicaciones Cercanas" %} {{help_request.id}}
+  <div id="loading-indicator" class="loader-wrapper">
+    <div class="loader is-loading"></div>
+  </div>
+</div>
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <div class="row is-centered cities-dropdown-wrapper">
+          <div class="columns is-vcentered is-desktop">
+            <div class="column">
+              <div class="cities-dropdown" role="menu">
+                <div class="field is-horizontal">
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <div class="select is-small">
+                          <input name="cities" class="input is-small" list="list_cities" placeholder="{% trans "Buscar por ciudad" %}" autocomplete="off">
+                        </div>
+                          <p class="help has-text-info">{% trans "Si no puede encontrar su ciudad es porque no hay publicacion cerca." %}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <datalist id="list_cities">
+                      <select size=10>
+                        {% for city, code in list_cities %}
+                          <option data-value="{{code}}">
+                            {{city}}
+                          </option>
+                        {% endfor %}
+                      </select>
+                  </datalist>
+              </div>
+            </div>
+          </div> 
+        </div>
+
+
+	<div class="row" style="margin-bottom: 5px;border: 1px green solid; border-radius: 2px;">
+	  {% leaflet_map "main" callback="mainMapInit" %}
+	</div>
+	<button id="find-me" class="button is-success  is-outlined is-fullwidth"><span class="icon is-small">
+	    <i class="fas fa-location-arrow"></i>
+	  </span>
+	  <span>{% trans "Mi localizacion" %}</span>
+	</button>
+	<p id="status"></p>
+      </div>
+
+
+
+      <div class="column is-6">
+	<div class="columns is-vcentered is-desktop">
+	  <div class="column">
+	  <div class="field has-addons">
+	    <div class="control is-expanded">
+	      <input
+		id="search-text-field"
+		class="input is-small"
+		type="text"
+		name="search-text-field"
+		placeholder="{% trans "Buscar por Producto o detalle. Por Ej. Manzanas" %}"
+	      >
+	    </div>
+	    <div class="control" >
+	      <button class="button is-warning is-small" id="search-button">
+		{% trans "Search" %}
+	      </button>
+	    </div>
+          </div>
+          </div>
+        </div>
+
+      <br>
+
+        <div class="panel is-info">
+          <p class="panel-heading">
+            {% trans "Publicaciones" %}
+          </p>
+          <div style="overflow-y:auto;max-height:75vh;padding:15px;">
+	    <div id="table">
+	    </div>
+          </div>
+        </div>
+	<div id="table-paginator"></div>
+      </div>
+    </div>
+    {% javascript 'table-view.js' %}
+    {% javascript 'list.js' %}
+
+
+    <script type="text/javascript">
+      function mainMapInit(map, options) {
+	      new ListRequestView(map, options);
+      }
+    </script>
+
+    <script type="text/template" id="table-template">
+      {% verbatim %}
+	<div class="media">
+	    <a href="/pedidos_comprador/{{id}}" class="has-text-grey-dark" title="{{added}}">
+	      <div class="media-content">
+		<div class="content">
+		  <p>
+		    <i class="fas fa-people-carry" aria-hidden="true"></i>
+		    <strong style="color:#363636;">#{{id}} | {{title}}</strong>
+		    <small>{{added}}</small>
+		    <br>
+		    {{name}}
+		  </p>
+		</div>
+	      </div>
+	  </a>
+	</div>
+      {% endverbatim %}
+    </script>
+
+    <script type="text/template" id="table-empty-template">
+	<div class="media">
+	    <h1>{% trans "No puedo encontrar solicitudes en su ubicación actual" %}</h1>
+	</div>
+    </script>
+`
+    <script type="text/template" id="table-paginator-template">
+        	<div class="row table-paginator">
+        	    <div class="column is-5">
+			{% trans "Displaying" %} &lt; {% trans "Pagina" %}
+			{% verbatim %}{{currentPage}}{% endverbatim %}
+			{% trans "de" %}
+			{% verbatim %}{{totalPages}}{% endverbatim %}
+			&gt;
+              </div>
+              <nav class="pagination is-right" role="navigation" aria-label="pagination">
+                  <button class="pagination-previous prev-button"
+		  {% verbatim %}{{hasPrev}}{% endverbatim %}>{% trans "Anterior" %}</button>
+                  <button class="pagination-next next-button"
+		  {% verbatim %}{{hasNext}}{% endverbatim %}>{% trans "Siguiente" %}</button>
+
+                  <ul class="pagination-list">
+                      <li><button class="pagination-link first-button {% verbatim %}{{showFirst}}{% endverbatim %}"
+		      {% verbatim %}{{hasFirst}}{% endverbatim %}>1</button></li>
+                      <li><span class="pagination-ellipsis {% verbatim %}{{showPrev}}{% endverbatim %}">&hellip;</span></li>
+                      <li><button class="pagination-link current-minus-button {% verbatim %}{{showPrev}}{% endverbatim %}">
+		      {% verbatim %}{{previousPage}}{% endverbatim %}</button></li>
+                      <li><button class="pagination-link is-current">
+		      {% verbatim %}{{currentPage}}{% endverbatim %}</button></li>
+                      <li><button class="pagination-link current-plus-button {% verbatim %}{{showNext}}{% endverbatim %}">
+		      {% verbatim %}{{nextPage}}{% endverbatim %}</button></li>
+                      <li><span class="pagination-ellipsis {{showNext}}">&hellip;</span></li>
+                      <li><button class="pagination-link last-button {% verbatim %}{{showLast}}{% endverbatim %}"
+		      {% verbatim %}{{hasLast}}>{{totalPages}}{% endverbatim %}</button></li>
+                  </ul>
+            </nav>
+        	</div>
+      </script>
+
+
+{% endblock %}

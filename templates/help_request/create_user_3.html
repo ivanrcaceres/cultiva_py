@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load leaflet_tags %}
+{% load static %}
+{% block bread %}
+<nav class="breadcrumb  has-arrow-separator" aria-label="breadcrumbs">
+    <ul>
+        <li>
+          <a href="/">
+            <span class="icon is-small">
+              <i class="fas fa-home" aria-hidden="true"></i>
+            </span>
+            <span>{% trans "Home" %}</span>
+          </a>
+        </li>
+        <li><a href="/recibir">{% trans "Information" %}</a></li>
+        <li class="is-active"><a href="#" aria-current="page">{% trans "Receive help" %}</a></li>
+    </ul>
+</nav>
+{% endblock bread %} 
+{% block content%}
+
+<div class="columns is-centered">
+        <div class="column is-5">
+    <h1>Registrar nueva user</h1>
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Registrar</button>
+    </form>
+                    </div>
+</div>
+
+
+{% endblock %}

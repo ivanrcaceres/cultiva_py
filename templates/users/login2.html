@@ -1,0 +1,22 @@
+{% extends 'base.html'%}
+{% load i18n %}
+
+{% block content %}
+<div class="columns is-centered">
+        <div class="column is-3">
+            <h1><strong>Ya se creo correctamente el usuario, ya puede iniciar sesion</strong></h1>
+
+
+            <br>
+
+            <a href="/login">
+                <article class="tile is-child has-text-centered button is-success">
+                    {% trans "Ir a Iniciar sesión" %}
+                </article>
+            </a>
+
+
+
+        </div>
+</div>
+{% endblock %}

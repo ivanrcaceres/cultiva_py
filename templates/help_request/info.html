@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block bread %}
+  <nav class="breadcrumb  has-arrow-separator" aria-label="breadcrumbs">
+    <ul>
+        <li>
+            <a href="/">
+                <span class="icon is-small">
+                    <i class="fas fa-home" aria-hidden="true"></i>
+                </span>
+                <span>{% trans "Inicio" %}</span>
+            </a>
+        </li>
+        <li class="is-active">
+          <a href="#" aria-current="page">{% trans "Productor" %}</a>
+        </li>
+      </ul>
+  </nav>
+{% endblock bread %}
+{% block content%}
+<div class="tile is-ancestor center">
+    <div class="tile is-5 is-vertical is-parent">
+
+        {% if user.is_authenticated %}
+        <div class="tile is-child ">
+            <a href="/user-ver-pro/{{user.id}}">
+                <button class="button is-success is-large is-fullwidth is-size-5 has-text-weight-bold">
+                    <span>{% trans "Ver mi perfil" %}</span>
+                    <span class="icon is-medium"><i class="fas fa-thumbs-up is-le"></i></span>
+                </button>
+            </a>
+        </div>
+
+        <div class="tile is-child ">
+            <a href="/solicitar">
+                <button class="button is-success is-large is-fullwidth is-size-5 has-text-weight-bold">
+                    <span>{% trans "Crear publicacion de producto" %}</span>
+                    <span class="icon is-medium"><i class="fas fa-thumbs-up is-le"></i></span>
+                </button>
+            </a>
+        </div>
+
+        <div class="tile is-child ">
+            <a href="/pedidos_mios">
+                <button class="button is-success is-large is-fullwidth is-size-5 has-text-weight-bold">
+                    <span>{% trans "Ver mis productos publicados" %}</span>
+                    <span class="icon is-medium"><i class="fas fa-thumbs-up is-le"></i></span>
+                </button>
+            </a>
+        </div>
+        {% else %}
+
+        <div class="tile is-child ">
+            <p><strong>Por favor inicie sesión</strong></p>
+            <a href="/login">
+                <button class="button is-success is-large is-fullwidth is-size-5 has-text-weight-bold">
+                    <span>{% trans "Iniciar Sesión o Crear Usuario" %}</span>
+                    <span class="icon is-medium"><i class="fas fa-thumbs-up is-le"></i></span>
+                </button>
+            </a>
+        </div>
+
+        {% endif%}
+
+
+
+
+
+
+
+
+    </div>
+</div>
+{% endblock %}

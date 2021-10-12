@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block bread %}
+  <nav class="breadcrumb  has-arrow-separator" aria-label="breadcrumbs">
+    <ul>
+        <li>
+            <a href="/">
+                <span class="icon is-small">
+                    <i class="fas fa-home" aria-hidden="true"></i>
+                </span>
+                <span>{% trans "Inicio" %}</span>
+            </a>
+        </li>
+        <li class="is-active">
+            <a href="#" aria-current="page">{% trans "Comprador" %}</a></li>
+        </ul>
+    </nav>
+{% endblock bread %}
+{% block content%}
+
+<div class="columns is-centered center">
+  <div class="column">
+    <div class="tile is-ancestor center">
+        <div class="tile is-5 is-vertical is-parent">
+
+                {% if user.is_authenticated %}
+
+                <div class="tile is-child">
+                <a href="/user-ver-com/{{user.id}}">
+                <button class="button is-success is-large is-fullwidth is-size-5 has-text-weight-bold">
+                    <span>{% trans "Ver mi perfil" %}</span>
+                    <span class="icon is-medium"><i class="fas fa-thumbs-up is-le"></i></span>
+                </button>
+            </a>
+                    </div>
+
+                <div class="tile is-child">
+                <a href="/mis_reservas">
+                    <button class="button is-success is-large is-fullwidth is-size-5 has-text-weight-bold">
+                    <span>{% trans "Ver mi lista de Reservas" %}</span>
+                    <span class="icon is-medium"><i class="fas fa-thumbs-up is-le"></i></span>
+                    </button>
+                </a>
+                </div>
+
+
+            <div class="tile is-child">
+                <a href="/pedidos">
+                    <button class="button is-success is-large is-fullwidth is-size-5 has-text-weight-bold">
+                    <span>{% trans "Ver los productos publicados" %}</span>
+                    <span class="icon is-medium"><i class="fas fa-thumbs-up is-le"></i></span>
+                    </button>
+                </a>
+                    </div>
+
+
+                {% else %}
+
+                <p><strong>Pueder ver la lista de productos publicados sin iniciar sesión</strong></p>
+                <div class="tile is-child">
+                    <div class="tile is-child">
+                <a href="/pedidos">
+                    <button class="button is-success is-large is-fullwidth is-size-5 has-text-weight-bold">
+                    <span>{% trans "Ver los productos publicados" %}</span>
+                    <span class="icon is-medium"><i class="fas fa-thumbs-up is-le"></i></span>
+                    </button>
+                </a>
+                    </div>
+                    <br>
+                    <p><strong>Si desea reservar producto debe iniciar sesión</strong></p>
+
+            <a href="/login-comprador">
+                    <button class="button is-success is-large is-fullwidth is-size-5 has-text-weight-bold">
+                    <span>{% trans "Iniciar Sesión o Crear Usuario" %}</span>
+                    <span class="icon is-medium"><i class="fas fa-thumbs-up is-le"></i></span>
+                    </button>
+                </a>
+                    </div>
+
+                {% endif%}
+
+
+                <!-- -->
+        {% if user.is_authenticated %}
+
+
+
+        {% else %}
+
+
+
+        {% endif%}
+
+        </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
